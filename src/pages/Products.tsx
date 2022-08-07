@@ -19,7 +19,7 @@ const Products: FC<{}> = (): ReactElement => {
 
   const filterItem: string = selected !== '-1' ? selected : '' || search !== '' ? search : '';
   const { isLoading, isError, data } = useQuery<Product[]>(["products"], () => ProductList(filterItem), {
-    select: (products: Product[]) => products.filter(product => {
+    select: (products: any) => products && products.products.filter((product: Product) => {
         return product['category']?.toLowerCase().includes(filterItem.toLowerCase()) || product['name']?.toLowerCase().includes(filterItem.toLowerCase());
     })
   });
@@ -32,7 +32,7 @@ const Products: FC<{}> = (): ReactElement => {
       <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
         {data &&
           data.map((p: Product) => (
-            <Fragment key={p.id}>
+            <Fragment key={p._id}>
               <ProductItem {...p} />
             </Fragment>
           ))}

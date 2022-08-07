@@ -1,31 +1,28 @@
 import { useNavigate } from 'react-router-dom'
 
-import { ErrorMessage, useFormik } from "formik";
-import validationSchema from "../validations/product.validation";
+import { useFormik } from "formik";
+import validationSchema from "../validations/user.validation";
 
-import { useQuery, useMutation } from "react-query";
-import { CategoryList } from '../services/category.service'
-import { Category } from '../types/CategoryModel';
-import { AddProduct } from '../services/product.service';
-import { Product } from '../types/ProductModel';
+import { GetGithubAvatar, GetToken } from '../services/user.service';
+import { User } from '../types/UserModel';
 
 
 const Register = () => {
     const navigate = useNavigate();
 	const formik = useFormik({
 		initialValues: {
-			name: '',
-			description: '',
-            price: 0,
-            avatar: '',
-            category: ''
+			fullName: '',
+			email: '',
+            github: '',
+            avatar: ''
 		},
 		validationSchema,
 		onSubmit: async (values, bag) => {
 			try {
-                if (values.price === 0) return bag.setFieldError('price', 'required field');
 
-				await AddProduct({...values} as Product);
+                const { avatar_url } = await GetGithubAvatar(values.github.split('/')[3]);
+                values = {...values, avatar: avatar_url };
+				await GetToken({...values} as User);
 				navigate("/");
 			} catch (e: any) {
 				bag.setErrors(e);
@@ -33,79 +30,43 @@ const Register = () => {
 		},
 	});
 
-    const { data } = useQuery<Category[]>("categories", CategoryList);
-
   return (
     <div className="flex flex-col justify-center items-center w-2/4 m-auto">        
-      <div className="text-4xl font-bold w-auto h-11 mb-5 mt-20">Create Product</div>
+      <div className="text-4xl font-bold w-auto h-11 mb-5 mt-20">Register | Get Token</div>
       <form onSubmit={formik.handleSubmit}>
         <input
-            id='name'
+            id='fullName'
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.name}
+            value={formik.values.fullName}
             className="register-input"
             type="text"
-            placeholder="Product name"
+            placeholder="Full Name"
         />
-        {formik.errors.name && formik.touched.name && (<span className='register-error'>{formik.errors.name}</span>)}
-
-        <textarea
-            id='description'
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.description}
-            className="register-input"
-            rows={3}
-            cols={5}
-            placeholder="Description"
-        />
-        {formik.errors.description && formik.touched.description && (<span className='register-error'>{formik.errors.description}</span>)}
+        {formik.errors.fullName && formik.touched.fullName && (<span className='register-error'>{formik.errors.fullName}</span>)}
 
         <input
-            id='avatar'
+            id='email'
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.avatar}
+            value={formik.values.email}
             className="register-input"
-            type="text"
-            placeholder="Image URL"
+            placeholder="email"
         />
-        {formik.errors.avatar && formik.touched.avatar && (<span className='register-error'>{formik.errors.avatar}</span>)}
-
-        <select
-            id='category'
-            onChange={value => formik.setFieldValue('category', value.target.value)}
-            value={formik.values.category}
-            className="register-input"
-        >
-            <option value="-1">Categories</option>
-            {data &&
-                data.map((category: Category) => (
-                    <option
-                        key={category.id}
-                        value={category.name}
-                        className="text-gray-500 px-4 py-3 text-base"
-                        >
-                        {category.name}
-                    </option>
-            ))}
-        </select>
-        {formik.errors.category && formik.touched.category && (<span className='register-error'>{formik.errors.category}</span>)}
+        {formik.errors.email && formik.touched.email && (<span className='register-error'>{formik.errors.email}</span>)}
 
         <input
-            id='price'
-            onChange={value => formik.setFieldValue('price', value.target.value)}
-            onBlur={value => formik.setFieldValue('price', value.target.value)}
-            value={formik.values.price}
+            id='github'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.github}
             className="register-input"
-            type={'number'}
-            placeholder="Price"
+            placeholder="Github "
         />
-        {formik.errors.price && formik.touched.price && (<span className='register-error'>{formik.errors.price}</span>)}
+        {formik.errors.github && formik.touched.github && (<span className='register-error'>{formik.errors.github}</span>)}
 
         <button type='submit' className="mt-10 inline-flex justify-center w-full bg-white hover:bg-blue-500 text-black font-bold hover:text-white py-2 px-4 border border-gray-300 shadow-sm rounded">
-            SUBMIT
+            SEND
         </button>
     </form>
     </div>

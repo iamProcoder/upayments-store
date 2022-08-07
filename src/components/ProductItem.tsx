@@ -4,29 +4,29 @@ import { TrashIcon } from '@heroicons/react/solid'
 
 import { useMutation, useQueryClient } from 'react-query'
 
-import { DeleteProduct } from '../services/product.service';
+// import { DeleteProduct } from '../services/product.service';
 import { Product } from '../types/ProductModel';
 
 const ProductItem: FC<Product> = (product: Product) => {
 
-  const queryClient = useQueryClient();
-  const mutation = useMutation(DeleteProduct, {
-    onSuccess() {
-      queryClient.invalidateQueries('products')
-    }
-  })
+  //const queryClient = useQueryClient();
+  // const mutation = useMutation(DeleteProduct, {
+  //   onSuccess() {
+  //     queryClient.invalidateQueries('products')
+  //   }
+  // })
   
   const [isHover, setHover] = useState<boolean>(false);
   const mouseOver = () => setHover(true);
   const mouseOut = () => setHover(false);
 
-  const deleteProduct = (id: string) => {
-    try {
-      mutation.mutate(id);
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // const deleteProduct = (id: string) => {
+  //   try {
+  //     mutation.mutate(id);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   return (
     <div
@@ -34,7 +34,7 @@ const ProductItem: FC<Product> = (product: Product) => {
       onMouseOver={mouseOver}
       onMouseOut={mouseOut}
     >
-      <Link to={`/product-detail/${product.id}`}>
+      <Link to={`/product-detail/${product._id}`}>
         <img
           className="p-8 rounded-t-lg max-h-96 w-96"
           src={product.avatar}
@@ -52,14 +52,14 @@ const ProductItem: FC<Product> = (product: Product) => {
           <>$ {product.price}</>
         </span>
       </div>
-      <button
+      {/* <button
         type={'submit'}
         hidden={!isHover}
         className="text-white font-semibold bg-red-600 w-full h-14 p-1 rounded absolute bottom-0 left-0"
         onClick={() => deleteProduct(product.id)}
       >
         <TrashIcon className='m-auto text-white w-8 h-8' />
-      </button>
+      </button> */}
     </div>
   );
 }
