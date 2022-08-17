@@ -10,6 +10,4 @@
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 
-### `Live`
 
-Open [UPayments Store App](https://u-payments-store.herokuapp.com/) to view it in the browser.
